@@ -1,8 +1,8 @@
 ---
-Name: sitemap3
-After: 'framework/*', 'cms/*'
+Name: sitemap4
+#After: 'framework/*', 'cms/*'
 ---
-SiteMapPage:
+LaminBarrow\SiteMap4\SiteMapPage:
   hidefrommap:
     ClassName:
       - ErrorPage

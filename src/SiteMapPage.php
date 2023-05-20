@@ -1,28 +1,43 @@
 <?php
 
+namespace LaminBarrow\SiteMap4;
+
+use Page;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
+
 /**
- *	Generates a sitemap for a silverstripe site.
+ *    Generates a sitemap for a silverstripe site.
  *
- *	Display filtering is dependant on the canSiteMap
- *	of the page or through the updateCanSiteMap when decorating
+ *    Display filtering is dependant on the canSiteMap
+ *    of the page or through the updateCanSiteMap when decorating
  *
- *	@author Ryan Cotter
- *	@author Michael Bollig
+ *    @author Ryan Cotter
+ *    @author Michael Bollig
+ *    @author Lamin Barrow <laminbarrow@gmail.com>
  *
- *	@package sitemap3
+ *    @package sitemap4
  */
 class SiteMapPage extends Page
 {
 
-    private static $icon = "sitemap3/images/treeicons/sitemap-file.png";
+    private static $icon = "sitemap4/images/treeicons/sitemap-file.png";
 
     /**
-     *	Retrieves a map of a page and it's direct descendants
+     *    Retrieves a map of a page and it's direct descendants
      *
-     *	@params int $pid Parent ID of the page(s) to start recursively displaying
-     *	@return ArrayList
+     *    @params int $pid Parent ID of the page(s) to start recursively displaying
+     *    @return ArrayList
      */
-    public static function getSiteMap($pid=0)
+    public static function getSiteMap($pid = 0)
     {
         $tmp = new ArrayList();
         $dl = SiteTree::get()->filter(array(
@@ -38,51 +53,51 @@ class SiteMapPage extends Page
                             ArrayData::create(array(
                                 'ParentMap' => $c->ParentMap,
                                 'ChildrenMap' => $c->ChildrenMap,
-                        )));
+                            )));
                     }
                 }
             } else {
                 $tmp->add(
                     ArrayData::create(array(
                         'ParentMap' => $d,
-                        'ChildrenMap' =>  ($ar = self::getSiteMap($d->ID)) ? $ar : null
-                )));
+                        'ChildrenMap' => ($ar = self::getSiteMap($d->ID)) ? $ar : null,
+                    )));
             }
         }
         return $tmp;
     }
 
     /**
-     *	Parses a {@link SiteMapPage}'s shortcode
+     *    Parses a {@link SiteMapPage}'s shortcode
      *
-     *	Sitemap css and javascript can be selected using
-     *	the SiteMapPage:Themes option in the config.yml.
+     *    Sitemap css and javascript can be selected using
+     *    the SiteMapPage:Themes option in the config.yml.
      *
-     *	Reads from {$themename}SiteMap.ss template, falling back to
-     *	default SiteMap.ss
+     *    Reads from {$themename}SiteMap.ss template, falling back to
+     *    default SiteMap.ss
      *
-     *	@param $arguments array Arguments to the shortcode
+     *    @param $arguments array Arguments to the shortcode
      *  @param $content string Content of the returned link (optional)
      *  @param $parser object Specify a parser to parse the content (see {@link ShortCodeParser})
      *  @return string SiteMap template render
      */
-    public static function SiteMapShortCodeHandler($arguments, $caption=null, $parser=null)
+    public static function SiteMapShortCodeHandler($arguments, $caption = null, $parser = null)
     {
         // Are we on a SiteMap page? If not, return.
         if (Director::is_cli() || Controller::curr()->ClassName != "SiteMapPage") {
             return;
         }
 
-        $theme = Config::inst()->get('SiteMapPage', 'theme');
-        Requirements::css(SITEMAP3_DIR."/themes/".$theme."/css/" . $theme . ".css");
-        Requirements::javascript(SITEMAP3_DIR."/themes/".$theme."/javascript/" . $theme . ".js");
+        $theme = Config::inst()->get('LaminBarrow\SiteMap4\SiteMapPage', 'theme');
+        Requirements::css(SITEMAP4_DIR . "/themes/" . $theme . "/css/" . $theme . ".css");
+        Requirements::javascript(SITEMAP4_DIR . "/themes/" . $theme . "/javascript/" . $theme . ".js");
         $data = self::getSiteMap(0);
         //Slickmap column generation etc
         $TotalColumns = count($data) - 1;
         //if (($TotalColumns - 1) < 11 ) { /* remove home page from count */
-        //	$TotalColumns = $totalItems - 1;
+        //    $TotalColumns = $totalItems - 1;
         //} else { $slickmapWidth = "col10"; }
-        $template = new SSViewer(array($theme.'SiteMap', 'SiteMap'));
+        $template = new SSViewer(array($theme . 'SiteMap', 'SiteMap'));
         return $template->process(new ArrayData(array(
             'CurrentPage' => Controller::curr(),
             'SiteMapTree' => $data,
@@ -98,8 +113,8 @@ class SiteMapPage extends Page
     {
         parent::requireDefaultRecords();
 
-        $smp = DataObject::get_one('SiteMapPage');
-        $autobuild = Config::inst()->get('SiteMapPage', 'autobuildpage');
+        $smp = DataObject::get_one('LaminBarrow\SiteMap4\SiteMapPage');
+        $autobuild = Config::inst()->get('LaminBarrow\SiteMap4\SiteMapPage', 'autobuildpage');
         //TODO: This does not check for whether this SiteMapPage is an orphan or not
         if (!$smp && !Director::isLive() && $autobuild === true) {
             $smp = new SiteMapPage();
@@ -122,8 +137,8 @@ class SiteMapPage extends Page
     {
         parent::onBeforeWrite();
         if (!$this->ID) {
-            $this->Title = _t('SiteMapPage.DEFAULTTITLE', 'Site Map');
-            $this->MenuTitle = _t('SiteMapPage.DEFAULTTITLE', 'Site Map');
+            $this->Title = _t('LaminBarrow\SiteMap4\SiteMapPage.DEFAULTTITLE', 'Site Map');
+            $this->MenuTitle = _t('LaminBarrow\SiteMap4\SiteMapPage.DEFAULTTITLE', 'Site Map');
             $this->Content = "<div>[SiteMap]</div><p>&nbsp;</p>";
         } else {
             $content = $this->Content;

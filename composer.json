@@ -1,20 +1,21 @@
 {
-	"name": "designcity/silverstripe-sitemap3",
+	"name": "laminbarrow/silverstripe-sitemap4",
 	"description": "A package that creates a sitemap based on your Silverstripe SiteTree. Includes optional themes, filtering options and accessibility markup.",
 	"type": "silverstripe-module",
-	"homepage": "https://github.com/designcity/silverstripe-sitemap3",
-	"keywords": ["silverstripe", "sitemap", "3.1"],
+	"homepage": "https://github.com/laminbarrow/silverstripe-sitemap4",
+	"keywords": ["silverstripe", "sitemap", "4.0"],
 	"license": "BSD-3-Clause",
 	"authors": [
 		{"name": "Michael Bollig", "email": "michael@designcity.com.au"},
-		{"name": "Ryan Cotter", "email": "ryan@designcity.com.au"}
+		{"name": "Ryan Cotter", "email": "ryan@designcity.com.au"},
+        {"name": "Lamin Barrow", "email": "laminbarrow@gmail.com"}
 	],
 	"support": {
-		"issues": "https://github.com/designcity/silverstripe-sitemap3/issues"
+		"issues": "https://github.com/laminbarrow/silverstripe-sitemap4/issues"
 	},
 	"require": {
-		"silverstripe/cms": "~3.1",
-		"silverstripe/framework": "~3.1"
+		"silverstripe/cms": "~4",
+		"silverstripe/framework": "~4"
 	},
-	"installer-name": "silverstripe-sitemap3"
+	"installer-name": "silverstripe-sitemap4"
 }
